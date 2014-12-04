@@ -31,7 +31,33 @@ router.post('/addSubscriber', function(req, res) {
     });
 });
 
-router.post('/removeSubscriber', function(req, res) {
+router.post('/subscriberDetail', function(req, res) {
+    var subscriberDetail = {
+        existingUser : false,
+        email : "",
+        subscriptionStatus : ""
+    }
+    client.query('select email, subscribed from xoomercustomer where email = $1',[req.body.email],function (err, result) {
+        if (err) { 
+            console.error(err); 
+        } else {
+            if (result.rows.length > 0 ) {
+                subscriberDetail.existingUser = true;
+                subscriberDetail.email = result.rows[0].email;
+                subscriberDetail.subscriptionStatus = result.rows[0].subscribed; 
+                res.json({subscriberDetail:subscriberDetail});
+            } else {
+                subscriberDetail.existingUser = false;
+                subscriberDetail.email = req.body.email;
+                subscriberDetail.subscriptionStatus = "N";  
+                res.json({subscriberDetail:subscriberDetail});
+            }
+            
+        }        
+    });
+});
+
+router.post('/deactivatateSubscription', function(req, res) {
     client.query('update xoomercustomer set subscribed = \'N\', unjoined = $1 where email= $2', [new Date( ), req.body.email], function (err, result) {
         if (err) { 
             console.error(err); 
