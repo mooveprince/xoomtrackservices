@@ -21,6 +21,16 @@ router.get('/getSubscribers', function (req, res) {
     });
 });
 
+router.get('/getActiveSubscribers', function (req, res) { 
+    client.query('select email, subscribed from xoomercustomer where subscribed = \'Y\'', function (err, result) {
+        if (err) { 
+            console.error(err); 
+        } else {
+            res.json (result.rows); 
+        }
+    });
+});
+
 router.post('/addSubscriber', function(req, res) {
     client.query('insert into xoomercustomer (email, subscribed) values ($1, \'Y\')',[req.body.email],function (err, result) {
         if (err) { 
