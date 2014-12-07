@@ -143,7 +143,7 @@ router.post ('/persistRate', function (req, res) {
 });
 
 scrapeXoomSite = function (callback) {
-    url = 'http://localhost:3006/';
+    url = process.env.XOOM_URL || 'http://localhost:3006/';
     request(url, function(error, response, html){ 
 		if(!error){
 			var $ = cheerio.load(html);
